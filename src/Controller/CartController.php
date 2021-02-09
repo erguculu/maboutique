@@ -18,17 +18,24 @@ class CartController extends AbstractController
      */
     public function index(ProductRepository $productRepository, Cart $cart): Response
     {
+        //dd($cart->getFull());
         $cartComplete = [];
 
-        foreach ($cart->get() as $id => $quantity){
-            $cartComplete[] = [
-                'product' => $productRepository->findOneBy([
-                    'id' => $id,
-                ]),
-                'quantity' => $quantity,
-            ];
-        }
+        if($cart->get()){
 
+            foreach ($cart->get() as $id => $quantity){
+                $product_object = $productRepository->findOneBy(['id' => $id,]);
+                
+                if(!$product_object){
+                    $cart->delete($id);
+                    continue;
+                }
+                $cartComplete[] = [
+                    'product' => $product_object,
+                    'quantity' => $quantity,
+                ];
+            }
+        }
         //dd($cartComplete);
         return $this->render('cart/index.html.twig',[
             'cart' => $cartComplete,
@@ -51,7 +58,6 @@ class CartController extends AbstractController
     /**
      * @Route("/cart/remove", name="remove_my_cart")
      * @param Cart $cart
-     * @param $id
      * @return Response
      */
     public function remove(Cart $cart): Response
@@ -59,4 +65,27 @@ class CartController extends AbstractController
         $cart->remove();
         return $this->redirectToRoute('products');
     }
+
+    /**
+     * @Route("/cart/delete/{id}", name="delete_to_cart")
+     * @param Cart $cart
+     * @return Response
+     */
+    public function delete(Cart $cart, int $id): Response
+    {
+        $cart->delete($id);
+        return $this->redirectToRoute('cart');
+    }
+
+    /**
+     * @Route("/cart/decrease/{id}", name="decrease_to_cart")
+     * @param Cart $cart
+     * @return Response
+     */
+    public function decrease(Cart $cart, int $id): Response
+    {
+        $cart->decrease($id);
+        return $this->redirectToRoute('cart');
+    }
+
 }

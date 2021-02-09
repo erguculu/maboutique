@@ -4,6 +4,7 @@ namespace App\DataClass;
 
 
 
+use App\Repository\ProductRepository;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 class Cart
@@ -43,4 +44,49 @@ class Cart
     {
         return $this->session->get('cart');
     }
+
+    public function delete($id)
+    {
+        $cart = $this->session->get('cart', []);
+
+
+        unset($cart[$id]);
+
+        return $this->session->set('cart', $cart);
+    }
+
+    public function decrease($id)
+    {
+        $cart = $this->session->get('cart', []);
+
+        if($cart[$id] > 1){
+            $cart[$id]--;
+
+        }else{
+
+            unset($cart[$id]);
+        }
+
+        return $this->session->set('cart', $cart );
+    }
+/**
+    public function getFull(ProductRepository $productRepository, int $id): array
+    {
+        $cartComplete = [];
+
+        if($this->get()){
+
+            foreach ($this->get() as $id => $quantity){
+                $cartComplete[] = [
+                    'product' => $productRepository->findOneBy([
+                        'id' => $id,
+                    ]),
+                    'quantity' => $quantity,
+                ];
+            }
+        }
+
+        return $cartComplete;
+    }
+*/
 }
