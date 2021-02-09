@@ -6,15 +6,18 @@ use App\DataClass\Search;
 use App\Entity\Product;
 use App\Form\SearchType;
 use App\Repository\ProductRepository;;
+
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
+
 class ProductController extends AbstractController
 {
     /**
-     * @Route("/nos-produits", name="products")
+     * @Route("/nos-produits", name="product_index")
      * @param Request $request
      * @param ProductRepository $productRepository
      * @return Response
@@ -40,16 +43,17 @@ class ProductController extends AbstractController
     }
 
     /**
-     * @Route("/{slug}", name="product_show")
+     * @Route ("/product/{id}", methods="GET", name="product_show")
      * @param ProductRepository $productRepository
-     * @param $slug
+     * @param int $id
      * @return Response
      */
-    public function show(ProductRepository $productRepository, $slug): Response
+    public function show(ProductRepository $productRepository, int $id): Response
     {
-
         return $this->render('product/show.html.twig', [
-            'product' => $productRepository->findOneBy($slug),
+           "product" => $productRepository->findOneBy([
+               'id' => $id,
+           ])
         ]);
     }
 
