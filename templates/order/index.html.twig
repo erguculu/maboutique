@@ -7,7 +7,10 @@
     <p>Choisissez vos préférénces avan de passer votre commande</p>
     <hr>
         <div class="col-md-6"></div>
-            <b></b><br>
+                {% set formHtml %}
+                    {{ form(form) }}
+                {% endset %}
+                {{ formHtml|replace({'[br]' : '<br/>'})|raw }}
             <b></b>
         <div class="col-md-6"></div>
             <b></b><br>

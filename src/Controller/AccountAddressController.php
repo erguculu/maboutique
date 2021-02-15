@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\DataClass\Cart;
 use App\Entity\Address;
 use App\Form\AddressType;
 use App\Repository\AddressRepository;
@@ -27,7 +28,7 @@ class AccountAddressController extends AbstractController
      * @param EntityManagerInterface $em
      * @return Response
      */
-    public function new(Request $request, EntityManagerInterface $em): Response
+    public function new(Request $request, Cart $cart, EntityManagerInterface $em): Response
     {
         $address = new Address();
         $form = $this->createForm(AddressType::class, $address);
@@ -39,7 +40,11 @@ class AccountAddressController extends AbstractController
 
             $em->flush();
 
-            return $this->redirectToRoute('account_address');
+            if($cart->get()){
+                return $this->redirectToRoute('order');
+            }else {
+                return $this->redirectToRoute('account_address');
+            }
 
         }
 
