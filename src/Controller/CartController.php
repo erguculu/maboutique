@@ -69,6 +69,7 @@ class CartController extends AbstractController
     /**
      * @Route("/cart/delete/{id}", name="delete_to_cart")
      * @param Cart $cart
+     * @param int $id
      * @return Response
      */
     public function delete(Cart $cart, int $id): Response
@@ -80,6 +81,7 @@ class CartController extends AbstractController
     /**
      * @Route("/cart/decrease/{id}", name="decrease_to_cart")
      * @param Cart $cart
+     * @param int $id
      * @return Response
      */
     public function decrease(Cart $cart, int $id): Response
