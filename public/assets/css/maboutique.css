@@ -57,7 +57,7 @@ body{
 .form-check{
     background-color: #f4f8ff;
     padding: 20px 65px;
-    margin-top: 5px;
+    margin-top: 25px;
 }
 
 .col-form-label{
@@ -67,5 +67,4 @@ body{
 .order-summary{
     background-color: #f4f8ff;
     padding: 20px;
-    margin-top: 22px;
 }
