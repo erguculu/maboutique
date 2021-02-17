@@ -87,9 +87,10 @@ class OrderController extends AbstractController
                 $orderDetail->setTotal($product['product']->getPrice() * $product['quantity']);
 
                 $em->persist($orderDetail);
-            }
 
-            $em->flush();
+
+            }
+            //$em->flush();
 
             return $this->render('order/add.html.twig',[
                 'cart' => $cart->getFull(),
