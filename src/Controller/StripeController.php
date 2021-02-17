@@ -3,6 +3,9 @@
 namespace App\Controller;
 
 use App\DataClass\Cart;
+use App\Repository\OrderRepository;
+use App\Repository\ProductRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Stripe\Checkout\Session;
 use Stripe\Stripe;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -13,33 +16,62 @@ use Symfony\Component\Routing\Annotation\Route;
 class StripeController extends AbstractController
 {
     /**
-     * @Route("/commande/create-session", name="stripe_create_session")
+     * @Route("/commande/create-session/{reference}", name="stripe_create_session")
+     * @param Cart $cart
+     * @param $reference
+     * @param OrderRepository $orderRepository
+     * @param $name
+     * @param ProductRepository $productRepository
+     * @return Response
+     * @throws \Stripe\Exception\ApiErrorException
      */
-    public function index(Cart $cart): Response
+    public function index(Cart $cart, $reference, OrderRepository $orderRepository, ProductRepository $productRepository): Response
     {
 
         $products_for_stripe = [];
         $YOUR_DOMAIN = 'http://127.0.01:8000';
 
-        foreach ($cart->getFull() as $product){
+        $order = $orderRepository->findOneBy([
+           "reference" => $reference
+        ]);
+        if(!$order){
+            new JsonResponse(['error' => 'order']);
+        }
+
+        foreach ($order->getOrderDetails()->getValues() as $product){
+            $product_object = $productRepository->findOneBy(['name' => $product->getProduct()]);
             $products_for_stripe[] = [
                 'price_data' => [
                     'currency' => 'eur',
-                    'unit_amount' => $product['product']->getPrice(),
+                    'unit_amount' => $product->getPrice(),
                     'product_data' => [
-                        'name' => $product['product']->getName(),
-                        'images' => [$YOUR_DOMAIN."/uploads/".$product['product']->getIllustration()],
+                        'name' => $product->getProduct(),
+                        'images' => [$YOUR_DOMAIN."/uploads/".$product_object->getIllustration()],
                     ],
                 ],
-                'quantity' => $product['quantity'],
+                'quantity' => $product->getQuantity(),
             ];
 
         }
+
+        $products_for_stripe[] = [
+            'price_data' => [
+                'currency' => 'eur',
+                'unit_amount' => $order->getCarrierPrice() * 100,
+                'product_data' => [
+                    'name' => $order->getCarrierName(),
+                    'images' => [$YOUR_DOMAIN],
+                ],
+            ],
+            'quantity' => 1,
+        ];
+
         Stripe::setApiKey('sk_test_51ILR2QK2LbgKQXqtDz237Wlp13yciean9d207Dh0yfITEvTdGw0k58BBW7Kpg7Ozds24aV4M3AFKWyMMjuUaRH5u00t6qBSStl');
 
         $YOUR_DOMAIN = 'http://127.0.01:8000';
 
         $checkout_session = Session::create([
+            'customer_email' => $this->getUser()->getEmail(),
             'payment_method_types' => ['card'],
             'line_items' => [
                 $products_for_stripe,

@@ -38,7 +38,7 @@ class OrderController extends AbstractController
     }
 
     /**
-     * @Route("/commande/recapitulatif", name="order_recap", methods={"POST"})
+     * @Route("/commande/recapitulatif", name="order_recap", methods={"GET", "POST"})
      * @param Request $request
      * @param Cart $cart
      * @param EntityManagerInterface $em
@@ -67,6 +67,8 @@ class OrderController extends AbstractController
             $delivery_content .= '<br/>'.$delivery->getCountry();
             // Save order in database
             $order = new Order();
+            $reference = $date->format('dmY')."-".uniqid();
+            $order->setReference($reference);
             $order->setUser($this->getUser());
             $order->setCreatedAt($date);
             $order->setCarrierName($carriers->getName());
@@ -90,12 +92,13 @@ class OrderController extends AbstractController
 
 
             }
-            //$em->flush();
+            $em->flush();
 
             return $this->render('order/add.html.twig',[
                 'cart' => $cart->getFull(),
                 'carrier' => $carriers,
                 'delivery' => $delivery_content,
+                'reference' => $order->getReference(),
             ]);
         }
 
