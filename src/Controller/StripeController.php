@@ -25,7 +25,7 @@ class StripeController extends AbstractController
      * @return Response
      * @throws \Stripe\Exception\ApiErrorException
      */
-    public function index(Cart $cart, $reference, OrderRepository $orderRepository, ProductRepository $productRepository): Response
+    public function index(Cart $cart, $reference, OrderRepository $orderRepository, ProductRepository $productRepository, EntityManagerInterface $em): Response
     {
 
         $products_for_stripe = [];
@@ -82,6 +82,9 @@ class StripeController extends AbstractController
         ]);
 
         $order->setStripeSessionId($checkout_session->id);
+
+        $em->flush();
+
 
         $response = new  JsonResponse(['id' => $checkout_session->id]);
         return $response;
