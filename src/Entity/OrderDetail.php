@@ -42,6 +42,11 @@ class OrderDetail
      */
     private $total;
 
+    public function __toString(): ?string
+    {
+        return $this->getProduct().' '. $this->getQuantity();
+    }
+
     public function getId(): ?int
     {
         return $this->id;
