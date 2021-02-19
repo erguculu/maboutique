@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\DataClass\Cart;
+use App\DataClass\Mailjet;
 use App\Repository\OrderRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -32,6 +33,10 @@ class OrderValidateController extends AbstractController
             $cart->remove();
             $order->setIsPaid(1);
             $em->flush();
+            $mail = new Mailjet();
+
+            $content ="Bonjour".$order->getUser()->getFullName(). 'Merci pour votre commande';
+            $mail->send($order->getUser()->getFullName(), $order->getUser()->getEmail(), 'Votre commande est bien validée', $content);
 
         }
 
