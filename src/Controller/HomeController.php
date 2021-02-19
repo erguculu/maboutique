@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\DataClass\Mailjet;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -16,6 +17,8 @@ class HomeController extends AbstractController
      */
     public function index(): Response
     {
+        //$mail =new Mailjet();
+        //$mail->send('A. C', 'erguculu@gmail.com', 'Mon premier Mail', 'Ca fonctionne' );
         return $this->render('home/index.html.twig');
     }
 }
