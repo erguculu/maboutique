@@ -53,7 +53,8 @@ class ProductController extends AbstractController
         return $this->render('product/show.html.twig', [
             "product" => $productRepository->findOneBy([
                'id' => $id,
-           ])
+           ]),
+            "products" => $productRepository->findByIsBest('IsBest'),
         ]);
     }
 
