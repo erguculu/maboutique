@@ -28,10 +28,10 @@ class OrderValidateController extends AbstractController
             return $this->redirectToRoute('home_index');
         }
 
-        if (!$order->getIsPaid(0)){
+        if (!$order->getState() == 0){
 
             $cart->remove();
-            $order->setIsPaid(1);
+            $order->setState(1);
             $em->flush();
             $mail = new Mailjet();
 
