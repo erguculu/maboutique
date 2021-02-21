@@ -1,0 +1,25 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mot de passe oublié - Ma Boutique!{% endblock %}
+
+{% block content %}
+    <dv class="block-small">
+        {% for message in app.flashes('notice') %}
+            <div class="alert alert-info">
+                {{ message }}
+            </div>
+        {% endfor %}
+        <form method="post">
+            <h1 class="h3 mb-3 font-weight-normal">Réinitialiser mon mot de passer</h1>
+            <label for="inputEmail">Votre email</label>
+            <input type="email" name="email" id="inputEmail" class="form-control" placeholder="Votre adresse email" required autofocus>
+            <label for="inputPassword">Votre mot de passe</label>
+            <button class="btn btn-lg btn-info btn-block mt-3" type="submit">
+                Réinitialiser mon mot de passealider
+            </button>
+            <hr>
+            <p class="text-center">Ou souhaiter-vous<a href="{{ path('reset_password') }}"> vous connecter</a></p>
+        </form>
+
+    </dv>
+{% endblock %}
